@@ -25,7 +25,7 @@ LabelActor::~LabelActor()
 
 }
 
-void LabelActor::set_contents(std::string &contents)
+void LabelActor::set_contents(std::string contents)
 {
     _contents = contents;
     _needs_texture_update = true;
@@ -36,7 +36,7 @@ const std::string& LabelActor::get_contents() const
     return _contents;
 }
 
-void LabelActor::set_foreground_color(Color &c)
+void LabelActor::set_foreground_color(Color c)
 {
     _foreground_color = c;
     _needs_texture_update = true;
@@ -45,6 +45,17 @@ void LabelActor::set_foreground_color(Color &c)
 const Color& LabelActor::get_foreground_color() const
 {
     return _foreground_color;
+}
+
+void LabelActor::set_font_prop(std::string font_prop)
+{
+    _font_prop = font_prop;
+    _needs_texture_update = true;
+}
+
+const std::string& LabelActor::get_font_prop() const
+{
+    return _font_prop;    
 }
 
 void LabelActor::display_surface()
@@ -60,7 +71,7 @@ void LabelActor::display_surface()
     pango_layout_set_markup(pango_layout, _contents.c_str(), -1);
 
     Color &color = _foreground_color;
-    cairo_set_source_rgb(_cairo_ctx.get(), color.red, color.green, color.blue);
+    cairo_set_source_rgb(_cairo_ctx.get(), (color.red / 255), (color.green / 255), (color.blue / 255));
 
     cairo_move_to(_cairo_ctx.get(), 0.0, 0.0);
     pango_cairo_show_layout(_cairo_ctx.get(), pango_layout);

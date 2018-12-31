@@ -18,13 +18,13 @@ public:
     LabelActor(Rect rect, std::string contents);
     ~LabelActor() override;
 
-    void set_font_prop(std::string &font_prop);
+    void set_font_prop(std::string font_prop);
     const std::string& get_font_prop() const;
 
-    void set_contents(std::string &contents);
+    void set_contents(std::string contents);
     const std::string& get_contents() const;
 
-    void set_foreground_color(Color &c);
+    void set_foreground_color(Color c);
     const Color& get_foreground_color() const;
 
     void display_surface() override;

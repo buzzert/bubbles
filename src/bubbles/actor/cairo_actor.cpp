@@ -41,9 +41,6 @@ void CairoActor::render(SDL_Renderer *renderer)
         display_surface();
     }
 
-    // TODO: three classes doing this same thing now
-    SDL_Rect dst_rect = rect.to_sdl_rect();
-
     if (texture.get() == NULL) {
         SDL_Texture *textureptr = SDL_CreateTextureFromSurface(renderer, _surface.get());
         texture = std::shared_ptr<SDL_Texture>(textureptr, SDL_DestroyTexture);
