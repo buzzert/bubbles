@@ -24,6 +24,21 @@ struct Rect
 
     Rect() : x(0), y(0), width(0), height(0) {};
     Rect(int x, int y, int width, int height) : x(x), y(y), width(width), height(height) {};
+
+    bool operator==(Rect &other) {
+        return (
+            x == other.x &&
+            y == other.y &&
+            width == other.width &&
+            height == other.height
+        );
+    }
+
+    bool operator!=(Rect &other) {
+        return !(*this == other);
+    }
+
+    // TODO: deprecate
     SDL_Rect to_sdl_rect() {
         SDL_Rect rect;
         rect.x = x;
@@ -34,10 +49,18 @@ struct Rect
         return rect;
     };
 
+    const SDL_Rect *sdl_rect() {
+        _sdl_rect = to_sdl_rect();
+        return &_sdl_rect;
+    }
+
     std::string to_string() const {
         return "Rect(" + std::to_string(x) + ", " + std::to_string(y) 
                        + ", " + std::to_string(width) + ", " + std::to_string(height) + ")";
     };
+
+private:
+    SDL_Rect _sdl_rect;
 };
 
 struct Vec2 {

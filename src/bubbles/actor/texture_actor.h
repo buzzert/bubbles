@@ -20,7 +20,7 @@ public:
     TextureActor(std::shared_ptr<SDL_Texture> texture);
     ~TextureActor() override {};
 
-    void render(SDL_Renderer *renderer) override;
+    void render(SDL_Renderer *renderer, Rect at_rect) override;
 
     std::shared_ptr<SDL_Texture> texture;
 };

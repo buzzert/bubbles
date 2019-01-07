@@ -18,7 +18,7 @@ public:
     ActorGrid(Rect r, unsigned cols);
     ~ActorGrid() override;
 
-    void render(SDL_Renderer *renderer) override;
+    void render(SDL_Renderer *renderer, Rect at_rect) override;
     void update(SDL_Renderer *renderer) override;
 
     /// Use height = -1 for "automatic" height

@@ -10,6 +10,8 @@
 #include <bubbles/core/foundation.h>
 #include <bubbles/actor/cairo_actor.h>
 
+#include <pango/pangocairo.h>
+
 BUBBLES_NAMESPACE_BEGIN
 
 class LabelActor : public CairoActor 
@@ -27,14 +29,15 @@ public:
     void set_foreground_color(Color c);
     const Color& get_foreground_color() const;
 
+    void set_alignment(PangoAlignment alignment);
+    const PangoAlignment& get_alignment() const;
+
     void display_surface() override;
 private:
-    std::string _font_prop;
-    std::string _contents;
-    Color       _foreground_color;
-    bool        _needs_texture_update;
-
-    void update_texture(SDL_Renderer *renderer);
+    std::string    _font_prop;
+    std::string    _contents;
+    Color          _foreground_color;
+    PangoAlignment _alignment;
 };
 
 BUBBLES_NAMESPACE_END

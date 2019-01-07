@@ -53,7 +53,8 @@ void MainScene::render()
     SDL_RenderClear(_renderer);
 
     for (ActorPtr &a : _actors) {
-        a->render(_renderer);
+        Rect rect = a->get_rect();
+        a->render(_renderer, rect);
     }
 
     SDL_RenderPresent(_renderer);

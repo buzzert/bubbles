@@ -6,8 +6,6 @@
 
 #include "label_actor.h"
 
-#include <pango/pangocairo.h>
-
 BUBBLES_NAMESPACE_BEGIN
 
 #define DEFAULT_FONT_PROP "Karla 24"
@@ -16,7 +14,7 @@ LabelActor::LabelActor(Rect rect, std::string contents)
     : CairoActor(rect), _contents(contents), 
       _foreground_color(0xFF, 0x00, 0x00, 0xFF),
       _font_prop(DEFAULT_FONT_PROP),
-      _needs_texture_update(true)
+      _alignment(PANGO_ALIGN_LEFT)
 {
 }
 
@@ -28,7 +26,7 @@ LabelActor::~LabelActor()
 void LabelActor::set_contents(std::string contents)
 {
     _contents = contents;
-    _needs_texture_update = true;
+    set_needs_display();
 }
 
 const std::string& LabelActor::get_contents() const
@@ -39,7 +37,7 @@ const std::string& LabelActor::get_contents() const
 void LabelActor::set_foreground_color(Color c)
 {
     _foreground_color = c;
-    _needs_texture_update = true;
+    set_needs_display();
 }
 
 const Color& LabelActor::get_foreground_color() const
@@ -50,7 +48,7 @@ const Color& LabelActor::get_foreground_color() const
 void LabelActor::set_font_prop(std::string font_prop)
 {
     _font_prop = font_prop;
-    _needs_texture_update = true;
+    set_needs_display();
 }
 
 const std::string& LabelActor::get_font_prop() const
@@ -58,9 +56,20 @@ const std::string& LabelActor::get_font_prop() const
     return _font_prop;    
 }
 
+void LabelActor::set_alignment(PangoAlignment alignment)
+{
+    _alignment = alignment;
+    set_needs_display();
+}
+
+const PangoAlignment& LabelActor::get_alignment() const
+{
+    return _alignment;
+}
+
 void LabelActor::display_surface()
 {
-    _needs_texture_update = false;
+    CairoActor::display_surface();
 
     PangoLayout *pango_layout = pango_cairo_create_layout(_cairo_ctx.get());
 
@@ -70,10 +79,26 @@ void LabelActor::display_surface()
     
     pango_layout_set_markup(pango_layout, _contents.c_str(), -1);
 
+    // This actually only really affects how multiple lines work
+    // If we're trying to draw text centered, we actually need to do calculation
+    pango_layout_set_alignment(pango_layout, _alignment);
+
+    int layout_width, layout_height;
+    pango_layout_get_pixel_size(pango_layout, &layout_width, &layout_height);
+
+    double offset_x = 0.0;
+    double offset_y = 0.0;
+    if (_alignment == PANGO_ALIGN_CENTER) {
+        offset_x = (rect.width - layout_width) / 2.0;
+    }
+
+    // Maybe make this an option, but for now always center vertically
+    offset_y = (rect.height - layout_height) / 2.0;
+
     Color &color = _foreground_color;
     cairo_set_source_rgb(_cairo_ctx.get(), (color.red / 255), (color.green / 255), (color.blue / 255));
 
-    cairo_move_to(_cairo_ctx.get(), 0.0, 0.0);
+    cairo_move_to(_cairo_ctx.get(), offset_x, offset_y);
     pango_cairo_show_layout(_cairo_ctx.get(), pango_layout);
     g_object_unref(pango_layout);
 }

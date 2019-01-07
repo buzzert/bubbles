@@ -43,9 +43,11 @@ TextureActor::TextureActor(std::shared_ptr<SDL_Texture> texture)
     rect.height = height;
 }
 
-void TextureActor::render(SDL_Renderer *renderer)
+void TextureActor::render(SDL_Renderer *renderer, Rect at_rect)
 {
-    SDL_Rect dst_rect = rect.to_sdl_rect();
+    Actor::render(renderer, at_rect);
+    
+    SDL_Rect dst_rect = at_rect.to_sdl_rect();
 
     SDL_SetTextureAlphaMod(texture.get(), (alpha * 255));
     SDL_SetTextureBlendMode(texture.get(), SDL_BLENDMODE_ADD);

@@ -44,10 +44,14 @@ void ActorGrid::update(SDL_Renderer *renderer)
     });
 }
 
-void ActorGrid::render(SDL_Renderer *renderer)
+void ActorGrid::render(SDL_Renderer *renderer, Rect at_rect)
 {
     each_actor([&] (ActorPtr actor) {
-        actor->render(renderer);
+        Rect rect = actor->get_rect();
+        rect.x += at_rect.x;
+        rect.y += at_rect.y;
+
+        actor->render(renderer, rect);
     });
 }
 

@@ -17,12 +17,13 @@ class CairoActor : public TextureActor
 public:
     CairoActor(Rect r);
 
-    void render(SDL_Renderer *renderer) override;
+    void render(SDL_Renderer *renderer, Rect at_rect) override;
 
     // This is called when the cairo context needs to be redrawn. Independent from rendering,
     // which simply blits the cairo surface to the SDL renderer. 
-    virtual void display_surface() {};
+    virtual void display_surface();
 protected:
+    Rect                         _surface_bounds;
     std::shared_ptr<cairo_t>     _cairo_ctx;
     std::shared_ptr<SDL_Surface> _surface;
 

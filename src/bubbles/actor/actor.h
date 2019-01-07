@@ -22,15 +22,26 @@ public:
     Actor(Rect rect);
     virtual ~Actor() {};
 
-    virtual void update(SDL_Renderer *renderer) {};
-    virtual void render(SDL_Renderer *renderer) {};
+    virtual void update(SDL_Renderer *renderer);
+    virtual void render(SDL_Renderer *renderer, Rect at_rect);
 
+    void add_subactor(ActorPtr actor);
+    void remove_subactor(ActorPtr actor);
+
+    Rect get_rect() const;
     void set_rect(Rect r);
 
-protected: 
+    void set_needs_display() { _needs_display = true; };
+
+    virtual void layout_actors() {};
+protected:
     Rect  rect;
     float alpha;
-    bool  needs_display;
+
+    bool _needs_display = true;
+    bool _needs_layout = true;
+
+    std::vector<ActorPtr> _subactors;
 };
 
 BUBBLES_NAMESPACE_END

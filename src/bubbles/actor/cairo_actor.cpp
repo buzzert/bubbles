@@ -31,13 +31,28 @@ void CairoActor::generate_surface()
     cairo_surface_destroy(cairosurf);
     _cairo_ctx = std::shared_ptr<cairo_t>(cr, cairo_destroy);
 
-    needs_display = false;
+    _surface_bounds = rect;
 }
 
-void CairoActor::render(SDL_Renderer *renderer)
+void CairoActor::display_surface()
 {
-    if (needs_display) {
+    // Clear context
+    cairo_t *cr = _cairo_ctx.get();
+    cairo_save(cr);
+    cairo_set_operator(cr, CAIRO_OPERATOR_CLEAR);
+    cairo_paint(cr);
+    cairo_restore(cr);
+
+    _needs_display = false;
+}
+
+void CairoActor::render(SDL_Renderer *renderer, Rect at_rect)
+{
+    if (_surface_bounds != rect) {
         generate_surface();
+    }
+
+    if (_needs_display) {
         display_surface();
     }
 
@@ -48,7 +63,7 @@ void CairoActor::render(SDL_Renderer *renderer)
         SDL_UpdateTexture(texture.get(), NULL, _surface->pixels, _surface->pitch);
     }
 
-    TextureActor::render(renderer);
+    TextureActor::render(renderer, at_rect);
 }
 
 BUBBLES_NAMESPACE_END
