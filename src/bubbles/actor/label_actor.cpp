@@ -12,7 +12,7 @@ BUBBLES_NAMESPACE_BEGIN
 
 LabelActor::LabelActor(Rect rect, std::string contents)
     : CairoActor(rect), _contents(contents), 
-      _foreground_color(0xFF, 0x00, 0x00, 0xFF),
+      _foreground_color(0xFF, 0xFF, 0xFF, 0xFF),
       _font_prop(DEFAULT_FONT_PROP),
       _alignment(PANGO_ALIGN_LEFT)
 {
@@ -95,11 +95,13 @@ void LabelActor::display_surface()
     // Maybe make this an option, but for now always center vertically
     offset_y = (rect.height - layout_height) / 2.0;
 
-    Color &color = _foreground_color;
-    cairo_set_source_rgb(_cairo_ctx.get(), (color.red / 255), (color.green / 255), (color.blue / 255));
+    cairo_t *cr = _cairo_ctx.get();
 
-    cairo_move_to(_cairo_ctx.get(), offset_x, offset_y);
-    pango_cairo_show_layout(_cairo_ctx.get(), pango_layout);
+    Color &color = _foreground_color;
+    cairo_set_source_rgba(cr, CAIRO_COLOR(color));
+
+    cairo_move_to(cr, offset_x, offset_y);
+    pango_cairo_show_layout(cr, pango_layout);
     g_object_unref(pango_layout);
 }
 

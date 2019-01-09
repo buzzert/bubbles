@@ -7,8 +7,12 @@
 #pragma once
 
 #include <bubbles/core/foundation.h>
+#include <cairo/cairo.h>
 
 BUBBLES_NAMESPACE_BEGIN
+
+#define CAIRO_COLOR(color) \
+    (color.red / 255.0), (color.green / 255.0), (color.blue / 255.0), (color.alpha / 255.0)
 
 struct Color
 {
@@ -26,6 +30,10 @@ struct Color
 
     SDL_Color to_sdl_color() {
         return { red, green, blue, alpha };
+    }
+
+    void set_source(cairo_t *cr) {
+        cairo_set_source_rgba(cr, CAIRO_COLOR((*this)));
     }
 };
 
