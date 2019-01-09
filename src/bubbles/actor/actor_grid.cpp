@@ -19,6 +19,12 @@ ActorGrid::~ActorGrid()
 
 }
 
+void ActorGrid::set_orientation(ActorGrid::Orientation orientation)
+{
+    _orientation = orientation;
+    _needs_layout = true;
+}
+
 void ActorGrid::each_grid_item(const GridItemIter &iter)
 {
     for (unsigned col = 0; col < _cols; col++) {
@@ -55,15 +61,51 @@ void ActorGrid::render(SDL_Renderer *renderer, Rect at_rect)
     });
 }
 
-void ActorGrid::stack_actor(ActorPtr actor, unsigned atColumn, float height)
+void ActorGrid::stack_actor(ActorPtr actor, unsigned atColumn, float size)
 {
     GridItem item {
         .actor = actor,
-        .requested_height = height
+        .requested_size = size
     };
 
     _grid[atColumn].push_back(item);
     _needs_layout = true;
+}
+
+float ActorGrid::variable_dimension(Rect &r) const
+{
+    if (Orientation::HORIZONTAL == _orientation) {
+        return r.width;
+    } else {
+        return r.height;
+    }
+}
+
+void ActorGrid::assign_variable_dimension(Rect &r, float value)
+{
+    if (Orientation::HORIZONTAL == _orientation) {
+        r.width = value;
+    } else {
+        r.height = value;
+    }
+}
+
+float ActorGrid::fixed_dimension(Rect &r) const
+{
+    if (Orientation::HORIZONTAL == _orientation) {
+        return r.height;
+    } else {
+        return r.width;
+    }
+}
+
+void ActorGrid::assign_fixed_dimension(Rect &r, float value)
+{
+    if (Orientation::HORIZONTAL == _orientation) {
+        r.height = value;
+    } else {
+        r.width = value;
+    }
 }
 
 void ActorGrid::layout_if_needed()
@@ -71,41 +113,55 @@ void ActorGrid::layout_if_needed()
     if (!_needs_layout) return;
 
     // Currently columns are evenly spaced
-    float column_width = rect.width / _cols;
+    float fixed_item_size = fixed_dimension(rect) / _cols;
 
     // Foreach col
-    float x_offset = 0.0;
+    Rect offset;
     for (std::vector<GridItem> col : _grid) {
-        float flexible_space_remaining = rect.height;
+        float flexible_space_remaining = variable_dimension(rect);
 
         // Compute ahead of time: subtract grid items with defined height
         unsigned num_flexible_items = 0;
         for (GridItem &item : col) {
-            if (item.requested_height > 0) {
-                flexible_space_remaining -= item.requested_height;
+            if (item.requested_size > 0) {
+                flexible_space_remaining -= item.requested_size;
             } else {
                 num_flexible_items++;
             }
         }
 
-        float y_offset = 0.0;
-        float flexible_item_height = (flexible_space_remaining / num_flexible_items);
+        if (Orientation::VERTICAL == _orientation) {
+            offset.y = 0.0;
+        } else {
+            offset.x = 0.0;
+        }
+
+        float flexible_item_size = (flexible_space_remaining / num_flexible_items);
         for (GridItem &item : col) {
             Rect r;
-            r.x = x_offset;
-            r.y = y_offset;
-            r.width = column_width;
-            if (item.requested_height > 0) {
-                r.height = item.requested_height;
+            r.x = offset.x;
+            r.y = offset.y;
+            assign_fixed_dimension(r, fixed_item_size);
+            if (item.requested_size > 0) {
+                assign_variable_dimension(r, item.requested_size);
             } else {
-                r.height = flexible_item_height;
+                assign_variable_dimension(r, flexible_item_size);
             }
 
             item.actor->set_rect(r);
-            y_offset += r.height;
+
+            if (Orientation::VERTICAL == _orientation) {
+                offset.y += variable_dimension(r);
+            } else {
+                offset.x += variable_dimension(r);
+            }
         }
 
-        x_offset += column_width;
+        if (Orientation::VERTICAL == _orientation) {
+            offset.x += fixed_item_size;
+        } else {
+            offset.y += fixed_item_size;
+        }
     }
 
     _needs_layout = false;
