@@ -37,7 +37,8 @@ bubbles_includes = include_directories('src')
 bubbles_lib = static_library('bubbles',
   sources,
   dependencies: dependencies,
-  include_directories: bubbles_includes
+  include_directories: bubbles_includes, 
+  install: true
 )
 
 bubbles_dep = declare_dependency(
