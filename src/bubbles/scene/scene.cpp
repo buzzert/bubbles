@@ -13,7 +13,7 @@ extern "C" {
 BUBBLES_NAMESPACE_BEGIN
 
 MainScene::MainScene(Rect canvasRect, bool windowed)
-    : _canvasRect(canvasRect)
+    : _scale(1.0), _canvasRect(canvasRect)
 {
     _surface = x11_helper_acquire_cairo_surface(canvasRect.width, canvasRect.height);
     _cr = cairo_create(_surface);
@@ -70,8 +70,8 @@ void MainScene::add_actor(ActorPtr a)
 
 void MainScene::set_scale(float scale)
 {
-    // TODO: set_scale
-    //SDL_RenderSetScale(_renderer, scale, scale);
+    _scale = scale;
+    // TODO: actually use this (cairo_scale before scene render call?)
 }
 
 void MainScene::set_framerate(unsigned int fps)
@@ -103,12 +103,17 @@ void MainScene::run()
 
     const int frames_per_sec = 60;
     const long sleep_nsec = (1.0 / frames_per_sec) * 1000000000;
-    struct timespec sleep_time = { 0, sleep_nsec };
     while (running) {
+        struct timespec render_begin, render_end;
+        clock_gettime(CLOCK_MONOTONIC_RAW, &render_begin);
+
         update();
         render();
 
-        // TODO: sleep for less time if it took more than 13.33ms to update frame
+        clock_gettime(CLOCK_MONOTONIC_RAW, &render_end);
+
+        long render_time_nsec = (render_end.tv_nsec - render_begin.tv_nsec);
+        struct timespec sleep_time = { 0, (sleep_nsec - render_time_nsec) };
         nanosleep(&sleep_time, NULL);
     }
 }

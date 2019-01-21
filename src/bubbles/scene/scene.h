@@ -35,6 +35,8 @@ private:
     cairo_t         *_cr;
     cairo_surface_t *_surface;
 
+    double           _scale;
+
     std::vector<ActorPtr> _actors;
 
     Rect _canvasRect;
