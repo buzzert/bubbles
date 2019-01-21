@@ -11,7 +11,7 @@ BUBBLES_NAMESPACE_BEGIN
 #define DEFAULT_FONT_PROP "Karla 24"
 
 LabelActor::LabelActor(Rect rect, std::string contents)
-    : CairoActor(rect), _contents(contents), 
+    : Actor(rect), _contents(contents),
       _foreground_color(0xFF, 0xFF, 0xFF, 0xFF),
       _font_prop(DEFAULT_FONT_PROP),
       _alignment(PANGO_ALIGN_LEFT)
@@ -67,11 +67,11 @@ const PangoAlignment& LabelActor::get_alignment() const
     return _alignment;
 }
 
-void LabelActor::display_surface()
+void LabelActor::render(cairo_t *cr, Rect at_rect)
 {
-    CairoActor::display_surface();
+    Actor::render(cr, at_rect);
 
-    PangoLayout *pango_layout = pango_cairo_create_layout(_cairo_ctx.get());
+    PangoLayout *pango_layout = pango_cairo_create_layout(cr);
 
     PangoFontDescription *pango_desc = pango_font_description_from_string(_font_prop.c_str());
     pango_layout_set_font_description(pango_layout, pango_desc);
@@ -94,8 +94,6 @@ void LabelActor::display_surface()
 
     // Maybe make this an option, but for now always center vertically
     offset_y = (rect.height - layout_height) / 2.0;
-
-    cairo_t *cr = _cairo_ctx.get();
 
     Color &color = _foreground_color;
     cairo_set_source_rgba(cr, CAIRO_COLOR(color));

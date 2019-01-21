@@ -6,15 +6,15 @@
 
 #pragma once 
 
+#include <bubbles/actor/actor.h>
 #include <bubbles/core/color.h>
 #include <bubbles/core/foundation.h>
-#include <bubbles/actor/cairo_actor.h>
 
 #include <pango/pangocairo.h>
 
 BUBBLES_NAMESPACE_BEGIN
 
-class LabelActor : public CairoActor 
+class LabelActor : public Actor
 {
 public:
     LabelActor(Rect rect, std::string contents);
@@ -32,7 +32,7 @@ public:
     void set_alignment(PangoAlignment alignment);
     const PangoAlignment& get_alignment() const;
 
-    void display_surface() override;
+    void render(cairo_t *cr, Rect at_rect);
 private:
     std::string    _font_prop;
     std::string    _contents;

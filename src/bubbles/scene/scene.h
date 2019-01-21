@@ -26,13 +26,14 @@ public:
 
     void update();
     void render();
+    void poll_events();
 
     /// Starts main run loop
     void run();
 
 private:
-    SDL_Window   *_window;
-    SDL_Renderer *_renderer;
+    cairo_t         *_cr;
+    cairo_surface_t *_surface;
 
     std::vector<ActorPtr> _actors;
 

@@ -6,29 +6,60 @@
 
 #include "scene.h"
 
+extern "C" {
+#include <bubbles/core/x11_support.h>
+}
+
 BUBBLES_NAMESPACE_BEGIN
 
 MainScene::MainScene(Rect canvasRect, bool windowed)
     : _canvasRect(canvasRect)
 {
-    int flags = windowed ? SDL_WINDOW_SHOWN : SDL_WINDOW_FULLSCREEN_DESKTOP;
+    _surface = x11_helper_acquire_cairo_surface(canvasRect.width, canvasRect.height);
+    _cr = cairo_create(_surface);
 
-    _window = SDL_CreateWindow("", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, canvasRect.width, canvasRect.height, flags);
-    if (_window) {
-        _renderer = SDL_CreateRenderer(_window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
-    }
+    // TODO: Need to do this on window size change too
+    cairo_xlib_surface_set_size(_surface, canvasRect.width, canvasRect.height);
 }
 
 MainScene::~MainScene()
 {
-    SDL_DestroyRenderer(_renderer);
-    SDL_DestroyWindow(_window);
+    cairo_destroy(_cr);
+    cairo_surface_destroy(_surface);
+}
+
+void MainScene::poll_events()
+{
+    XEvent e;
+
+    // Temp: this should be handled by x11_support
+    Display *display = cairo_xlib_surface_get_display(_surface);
+    for (;;) {
+        if (XPending(display)) {
+            // XNextEvent blocks the caller until an event arrives
+            XNextEvent(display, &e);
+        } else {
+            return;
+        }
+
+        switch (e.type) {
+            case ConfigureNotify:
+                // TODO
+                break;
+            case ButtonPress:
+            case KeyPress:
+            default:
+                break;
+        }
+    }
 }
 
 void MainScene::update()
 {
+    poll_events();
+
     for (auto &a : _actors) {
-        a->update(_renderer);
+        a->update();
     }
 }
 
@@ -39,7 +70,8 @@ void MainScene::add_actor(ActorPtr a)
 
 void MainScene::set_scale(float scale)
 {
-    SDL_RenderSetScale(_renderer, scale, scale);
+    // TODO: set_scale
+    //SDL_RenderSetScale(_renderer, scale, scale);
 }
 
 void MainScene::set_framerate(unsigned int fps)
@@ -49,39 +81,35 @@ void MainScene::set_framerate(unsigned int fps)
 
 void MainScene::render()
 {
-    SDL_SetRenderDrawColor(_renderer, 0x00, 0x00, 0x00, 0xFF);
-    SDL_RenderClear(_renderer);
+    cairo_push_group(_cr);
+
+    cairo_set_source_rgba(_cr, 0.0, 0.0, 0.0, 1.0);
+    cairo_paint(_cr);
 
     for (ActorPtr &a : _actors) {
         Rect rect = a->get_rect();
-        a->render(_renderer, rect);
+        a->render(_cr, rect);
     }
 
-    SDL_RenderPresent(_renderer);
+    cairo_pop_group_to_source(_cr);
+
+    cairo_paint(_cr);
+    cairo_surface_flush(_surface);
 }
 
 void MainScene::run()
 {
     bool running = true;
-    const int kTicksPerFrame = 1000 / _frames_per_sec;
 
+    const int frames_per_sec = 60;
+    const long sleep_nsec = (1.0 / frames_per_sec) * 1000000000;
+    struct timespec sleep_time = { 0, sleep_nsec };
     while (running) {
-        Uint32 startTime = SDL_GetTicks();
-
-        SDL_Event e;
-        while (SDL_PollEvent(&e) != 0) {
-            if (e.type == SDL_QUIT) {
-                running = false;
-            }
-        }
-
         update();
         render();
 
-        Uint32 ticks = SDL_GetTicks() - startTime;
-        if (ticks < kTicksPerFrame) {
-            SDL_Delay(kTicksPerFrame - ticks);
-        }
+        // TODO: sleep for less time if it took more than 13.33ms to update frame
+        nanosleep(&sleep_time, NULL);
     }
 }
 

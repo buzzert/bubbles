@@ -37,7 +37,8 @@ int main(int argc, char **argv)
     grid->stack_actor(qube1, 0, -1);
     
     auto label = std::make_shared<LabelActor>(Rect(), "This is a test!");
-    grid->stack_actor(label, 1, -1);
+    label->set_background_color(Color(0xFF, 0x00, 0xFF, 0xFF));
+    grid->stack_actor(label, 0, -1);
 
     auto qube3 = std::make_shared<QubeActor>(Rect());
     grid->stack_actor(qube3, 1, -1);

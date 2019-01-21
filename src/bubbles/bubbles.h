@@ -11,9 +11,7 @@
 
 #include <bubbles/actor/actor.h>
 #include <bubbles/actor/actor_grid.h>
-#include <bubbles/actor/cairo_actor.h>
 #include <bubbles/actor/label_actor.h>
-#include <bubbles/actor/texture_actor.h>
 
 #include <bubbles/scene/scene.h>
 

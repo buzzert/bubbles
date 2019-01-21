@@ -6,6 +6,7 @@
 
 #pragma once
 
+#include <bubbles/core/color.h>
 #include <bubbles/core/foundation.h>
 #include <bubbles/core/geometry.h>
 
@@ -22,8 +23,8 @@ public:
     Actor(Rect rect);
     virtual ~Actor() {};
 
-    virtual void update(SDL_Renderer *renderer);
-    virtual void render(SDL_Renderer *renderer, Rect at_rect);
+    virtual void update();
+    virtual void render(cairo_t *cr, Rect at_rect);
 
     void add_subactor(ActorPtr actor);
     void remove_subactor(ActorPtr actor);
@@ -31,12 +32,17 @@ public:
     Rect get_rect() const;
     void set_rect(Rect r);
 
+    Color get_background_color() const { return _background_color; }
+    void  set_background_color(Color c) { _background_color = c; }
+
     void set_needs_display() { _needs_display = true; };
 
     virtual void layout_actors() {};
 protected:
     Rect  rect;
     float alpha;
+
+    Color _background_color;
 
     bool _needs_display = true;
     bool _needs_layout = true;

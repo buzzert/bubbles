@@ -9,7 +9,7 @@
 BUBBLES_NAMESPACE_BEGIN
 
 Actor::Actor(Rect rect)
-    : rect(rect), alpha(1.0), _needs_display(true)
+    : rect(rect), alpha(1.0), _needs_display(true), _background_color(Color(0xFF, 0xFF, 0xFF, 0x00))
 {}
 
 void Actor::set_rect(Rect r)
@@ -33,7 +33,7 @@ void Actor::remove_subactor(ActorPtr actor)
     // todo
 }
 
-void Actor::update(SDL_Renderer *renderer)
+void Actor::update()
 {
     if (_needs_layout) {
         layout_actors();
@@ -41,18 +41,27 @@ void Actor::update(SDL_Renderer *renderer)
     }
 
     for (ActorPtr a : _subactors) {
-        a->update(renderer);
+        a->update();
     }
 }
 
-void Actor::render(SDL_Renderer *renderer, Rect at_rect)
+void Actor::render(cairo_t *cr, Rect at_rect)
 {
-    for (ActorPtr a : _subactors) {
-        Rect rect = a->get_rect();
-        rect.x += at_rect.x;
-        rect.y += at_rect.y;
+    // Clear with background colorz
+    _background_color.set_source(cr);
+    cairo_rectangle(cr, 0.0, 0.0, rect.width, rect.height);
+    cairo_fill(cr);
 
-        a->render(renderer, rect);
+    // TODO: untested
+    for (ActorPtr a : _subactors) {
+        cairo_save(cr);
+
+        Rect a_rect = a->get_rect();
+        cairo_translate(cr, a_rect.x, a_rect.y);
+
+        a->render(cr, rect);
+
+        cairo_restore(cr);
     }
 }
 

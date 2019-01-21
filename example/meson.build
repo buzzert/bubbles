@@ -13,6 +13,6 @@ example_sources = [
 example_bin = executable('example',
   example_sources,
   dependencies: example_dependencies,
-  install: false,
+  install: true,
 )
 

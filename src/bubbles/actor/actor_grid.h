@@ -23,8 +23,8 @@ public:
     ActorGrid(Rect r, unsigned cols);
     ~ActorGrid() override;
 
-    void render(SDL_Renderer *renderer, Rect at_rect) override;
-    void update(SDL_Renderer *renderer) override;
+    void update() override;
+    void render(cairo_t *cr, Rect at_rect) override;
 
     /// Use size = -1 for "automatic" 
     void stack_actor(ActorPtr actor, unsigned atColumn, float size = -1);
@@ -38,10 +38,11 @@ private:
             // that is, requested_size in the variable dimension
     };
 
-    ActorGrid::Orientation _orientation = ActorGrid::Orientation::VERTICAL;
-    std::vector<std::vector<GridItem>> _grid;
     bool     _needs_layout = true;
     unsigned _cols;
+
+    ActorGrid::Orientation _orientation = ActorGrid::Orientation::VERTICAL;
+    std::vector<std::vector<GridItem>> _grid;
 
     using ActorIter = std::function<void(ActorPtr)>;
     void each_actor(const ActorIter &iter);

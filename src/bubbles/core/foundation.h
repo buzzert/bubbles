@@ -11,6 +11,7 @@
 #include <string>
 #include <vector>
 
-#include <SDL2/SDL.h>
+#include <cairo/cairo.h>
 
 #include <bubbles/core/defines.h>
+

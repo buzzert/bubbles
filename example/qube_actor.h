@@ -14,20 +14,21 @@
 
 using namespace Bubbles;
 
-class QubeActor : public CairoActor
+class QubeActor : public Actor
 {
 public:
     QubeActor(Rect rect);
 
-    void update(SDL_Renderer *renderer) override;
-    void render(SDL_Renderer *renderer, Rect at_rect) override;
+    void update() override;
+    void render(cairo_t *cr, Rect at_rect) override;
 
 private:
     double _time_offset;
 
-    void draw_line(double x1, double y1, double x2, double y2, double size);
-    void draw_point(double x, double y, double size);
+    void draw_line(cairo_t *cr, double x1, double y1, double x2, double y2, double size);
+    void draw_point(cairo_t *cr, double x, double y, double size);
     void draw_mesh(
+        cairo_t *cr,
         double x, double y, 
         std::vector<Vec3> vertices, 
         std::vector<std::pair<unsigned int, unsigned int>> edges,
@@ -35,6 +36,6 @@ private:
         Color color,
         double time_offset
     );
-    void draw_tetrahedron(double cx, double cy, double radius, double time_offset);
+    void draw_tetrahedron(cairo_t *cr, double cx, double cy, double radius, double time_offset);
 };
 

@@ -42,22 +42,27 @@ void ActorGrid::each_actor(const ActorIter &iter)
     });
 }
 
-void ActorGrid::update(SDL_Renderer *renderer)
+void ActorGrid::update()
 {
     layout_if_needed();
     each_actor([&] (ActorPtr actor) {
-        actor->update(renderer);
+        actor->update();
     });
 }
 
-void ActorGrid::render(SDL_Renderer *renderer, Rect at_rect)
+void ActorGrid::render(cairo_t *cr, Rect at_rect)
 {
-    each_actor([&] (ActorPtr actor) {
-        Rect rect = actor->get_rect();
-        rect.x += at_rect.x;
-        rect.y += at_rect.y;
+    Actor::render(cr, at_rect);
 
-        actor->render(renderer, rect);
+    each_actor([&] (ActorPtr actor) {
+        cairo_save(cr);
+
+        Rect rect = actor->get_rect();
+        cairo_translate(cr, rect.x, rect.y);
+
+        actor->render(cr, rect);
+
+        cairo_restore(cr);
     });
 }
 

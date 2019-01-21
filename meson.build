@@ -1,4 +1,4 @@
-project('bubbles', 'cpp')
+project('bubbles', ['cpp', 'c'])
 
 sources = [
   'src/bubbles/bubbles.h',
@@ -7,17 +7,15 @@ sources = [
   'src/bubbles/core/defines.h',
   'src/bubbles/core/geometry.h',
   'src/bubbles/core/geometry.cpp',
+  'src/bubbles/core/x11_support.h',
+  'src/bubbles/core/x11_support.c',
 
   'src/bubbles/actor/actor.h',
   'src/bubbles/actor/actor.cpp',
   'src/bubbles/actor/actor_grid.h',
   'src/bubbles/actor/actor_grid.cpp',
-  'src/bubbles/actor/cairo_actor.h',
-  'src/bubbles/actor/cairo_actor.cpp',
   'src/bubbles/actor/label_actor.h',
   'src/bubbles/actor/label_actor.cpp',
-  'src/bubbles/actor/texture_actor.h',
-  'src/bubbles/actor/texture_actor.cpp',
 
   'src/bubbles/scene/scene.h',
   'src/bubbles/scene/scene.cpp',
@@ -31,6 +29,7 @@ dependencies = [
   dependency('SDL2_image'),
   dependency('freetype2'),
   dependency('pangoft2'),
+  dependency('x11')
 ]
 
 bubbles_includes = include_directories('src')
