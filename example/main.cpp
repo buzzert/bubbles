@@ -4,11 +4,10 @@
  * Copyright (c) 2018 James Magahern <james@magahern.com>
  */
 
-#include <SDL2/SDL.h>
-
 #include <cassert>
 #include <libgen.h>
 #include <memory>
+#include <string.h>
 
 #include "qube_actor.h"
 #include <bubbles/bubbles.h>

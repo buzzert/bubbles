@@ -25,8 +25,6 @@ dependencies = [
   dependency('cairo'),
   dependency('pango'),
   dependency('pangocairo'),
-  dependency('sdl2'),
-  dependency('SDL2_image'),
   dependency('freetype2'),
   dependency('pangoft2'),
   dependency('x11')

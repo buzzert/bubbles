@@ -9,9 +9,6 @@
 #include <math.h>
 #include <bubbles/core/foundation.h>
 
-// for SDL_Rect
-#include <SDL2/SDL.h>
-
 BUBBLES_NAMESPACE_BEGIN
 
 struct Rect
@@ -38,29 +35,10 @@ struct Rect
         return !(*this == other);
     }
 
-    // TODO: deprecate
-    SDL_Rect to_sdl_rect() {
-        SDL_Rect rect;
-        rect.x = x;
-        rect.y = y;
-        rect.w = width;
-        rect.h = height;
-
-        return rect;
-    };
-
-    const SDL_Rect *sdl_rect() {
-        _sdl_rect = to_sdl_rect();
-        return &_sdl_rect;
-    }
-
     std::string to_string() const {
         return "Rect(" + std::to_string(x) + ", " + std::to_string(y) 
                        + ", " + std::to_string(width) + ", " + std::to_string(height) + ")";
     };
-
-private:
-    SDL_Rect _sdl_rect;
 };
 
 struct Vec2 {
