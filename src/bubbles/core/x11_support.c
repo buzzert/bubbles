@@ -8,6 +8,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 static Window __window = { 0 };
 static Display *__display = NULL;
@@ -43,6 +44,26 @@ void x11_get_display_bounds(int *width, int *height)
 {
     *width = DisplayWidth(__display, DefaultScreen(__display));
     *height = DisplayHeight(__display, DefaultScreen(__display));
+}
+
+void x11_helper_set_fullscreen(bool fullscreen)
+{
+    // Talk to the window manager to ask to go fullscreen
+    Atom wm_state = XInternAtom(__display, "_NET_WM_STATE", false);
+    Atom atom_fullscreen = XInternAtom(__display, "_NET_WM_STATE_FULLSCREEN", false);
+
+    XEvent xev;
+    memset(&xev, 0, sizeof(xev));
+    xev.type = ClientMessage;
+    xev.xclient.window = __window;
+    xev.xclient.message_type = wm_state;
+    xev.xclient.format = 32;
+    xev.xclient.data.l[0] = 1;
+    xev.xclient.data.l[1] = atom_fullscreen;
+    xev.xclient.data.l[2] = 0;
+
+    XSendEvent(__display, DefaultRootWindow(__display), False,
+                    SubstructureRedirectMask | SubstructureNotifyMask, &xev);
 }
 
 cairo_surface_t* x11_helper_acquire_cairo_surface(int width, int height)

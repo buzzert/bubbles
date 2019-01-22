@@ -20,6 +20,10 @@ MainScene::MainScene(Rect canvasRect, bool windowed)
 
     // TODO: Need to do this on window size change too
     cairo_xlib_surface_set_size(_surface, canvasRect.width, canvasRect.height);
+
+    if (!windowed) {
+        x11_helper_set_fullscreen(true);
+    }
 }
 
 MainScene::~MainScene()
