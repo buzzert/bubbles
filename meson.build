@@ -1,4 +1,6 @@
-project('bubbles', ['cpp', 'c'])
+project('bubbles', ['cpp', 'c'],
+    default_options: 'cpp_std=c++14',
+)
 
 sources = [
   'src/bubbles/bubbles.h',
