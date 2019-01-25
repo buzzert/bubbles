@@ -6,6 +6,8 @@
 
 #include "x11_support.h"
 
+#include <X11/extensions/Xfixes.h>
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -101,5 +103,14 @@ void x11_helper_destroy_surface(cairo_surface_t *surface)
 {
     cairo_surface_destroy(surface);
     XCloseDisplay(__display);
+}
+
+void x11_set_cursor_visible(bool cursor_visible)
+{
+    if (cursor_visible) {
+        XFixesShowCursor(__display, __window);
+    } else {
+        XFixesHideCursor(__display, __window);
+    }
 }
 

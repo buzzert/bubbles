@@ -24,3 +24,6 @@ extern void x11_helper_set_fullscreen(bool fullscreen);
 // Cleanup
 extern void x11_helper_destroy_surface(cairo_surface_t *surface);
 
+// Show/hide the mouse cursor
+extern void x11_set_cursor_visible(bool cursor_visible);
+
