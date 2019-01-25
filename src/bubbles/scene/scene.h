@@ -23,6 +23,7 @@ public:
     void add_actor(ActorPtr actor);
     void set_scale(float scale);
     void set_framerate(unsigned int frames_per_sec);
+    void set_hides_cursor(bool hides_cursor);
 
     void update();
     void render();

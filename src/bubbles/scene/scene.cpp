@@ -83,6 +83,11 @@ void MainScene::set_framerate(unsigned int fps)
     _frames_per_sec = fps;
 }
 
+void MainScene::set_hides_cursor(bool hides_cursor)
+{
+    x11_set_cursor_visible(!hides_cursor);
+}
+
 void MainScene::render()
 {
     cairo_push_group(_cr);
@@ -108,16 +113,10 @@ void MainScene::run()
     const int frames_per_sec = 60;
     const long sleep_nsec = (1.0 / frames_per_sec) * 1000000000;
     while (running) {
-        struct timespec render_begin, render_end;
-        clock_gettime(CLOCK_MONOTONIC_RAW, &render_begin);
-
         update();
         render();
 
-        clock_gettime(CLOCK_MONOTONIC_RAW, &render_end);
-
-        long render_time_nsec = (render_end.tv_nsec - render_begin.tv_nsec);
-        struct timespec sleep_time = { 0, (sleep_nsec - render_time_nsec) };
+        struct timespec sleep_time = { 0, sleep_nsec };
         nanosleep(&sleep_time, NULL);
     }
 }
