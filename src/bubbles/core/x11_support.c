@@ -6,6 +6,7 @@
 
 #include "x11_support.h"
 
+#include <X11/Xatom.h>
 #include <X11/extensions/Xfixes.h>
 
 #include <stdio.h>
@@ -40,6 +41,22 @@ static Window get_window_from_environment_or_make_one(Display *display, int widt
     }
 
     return window;
+}
+
+static void x11_set_window_type()
+{
+    Atom prop_atom = XInternAtom(__display, "_NET_WM_WINDOW_TYPE", false);
+    Atom type_atom = XInternAtom(__display, "_NET_WM_WINDOW_TYPE_DIALOG", false);
+    XChangeProperty(
+        __display,
+        __window,
+        prop_atom,
+        XA_ATOM,
+        32,
+        PropModeReplace,
+        (unsigned char *)&type_atom,
+        1
+    );
 }
 
 void x11_get_display_bounds(int *width, int *height)
@@ -84,6 +101,9 @@ cairo_surface_t* x11_helper_acquire_cairo_surface(int width, int height)
 
     // Map window to display
     XMapWindow(__display, __window);
+
+    // Set window type hint
+    x11_set_window_type();
 
     // Create cairo surface
     int screen = DefaultScreen(__display);
