@@ -91,6 +91,9 @@ void MainScene::set_hides_cursor(bool hides_cursor)
 void MainScene::render()
 {
     cairo_push_group(_cr);
+    if (_scale > 1.0) {
+        cairo_scale(_cr, _scale, _scale);
+    }
 
     cairo_set_source_rgba(_cr, 0.0, 0.0, 0.0, 1.0);
     cairo_paint(_cr);
