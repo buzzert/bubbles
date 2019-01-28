@@ -9,6 +9,8 @@
 #include <math.h>
 #include <bubbles/core/foundation.h>
 
+#define RECT_ZERO Rect()
+
 BUBBLES_NAMESPACE_BEGIN
 
 struct Rect
@@ -36,7 +38,7 @@ struct Rect
     }
 
     std::string to_string() const {
-        return "Rect(" + std::to_string(x) + ", " + std::to_string(y) 
+        return "Rect(" + std::to_string(x) + ", " + std::to_string(y)
                        + ", " + std::to_string(width) + ", " + std::to_string(height) + ")";
     };
 };

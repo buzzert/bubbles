@@ -96,14 +96,14 @@ cairo_surface_t* x11_helper_acquire_cairo_surface(int width, int height)
     // Create (or get) window
     __window = get_window_from_environment_or_make_one(__display, width, height);
 
+    // Set window type hint
+    x11_set_window_type();
+
     // Enable key events
     XSelectInput(__display, __window, ButtonPressMask | KeyPressMask | StructureNotifyMask);
 
     // Map window to display
     XMapWindow(__display, __window);
-
-    // Set window type hint
-    x11_set_window_type();
 
     // Create cairo surface
     int screen = DefaultScreen(__display);
