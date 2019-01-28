@@ -26,6 +26,7 @@ LabelActor::~LabelActor()
 void LabelActor::set_contents(std::string contents)
 {
     _contents = contents;
+    _pango_layout_valid = false;
     set_needs_display();
 }
 
@@ -48,6 +49,7 @@ const Color& LabelActor::get_foreground_color() const
 void LabelActor::set_font_prop(std::string font_prop)
 {
     _font_prop = font_prop;
+    _pango_layout_valid = false;
     set_needs_display();
 }
 
