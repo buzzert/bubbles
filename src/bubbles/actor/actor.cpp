@@ -6,10 +6,14 @@
 
 #include "actor.h"
 
+#include <algorithm>
+#include <bubbles/scene/scene.h>
+
 BUBBLES_NAMESPACE_BEGIN
 
 Actor::Actor(Rect rect)
-    : rect(rect), alpha(1.0), _needs_display(true), _background_color(Color(0xFF, 0xFF, 0xFF, 0x00))
+    : rect(rect), alpha(1.0), _background_color(Color(0xFF, 0xFF, 0xFF, 0x00)),
+      _parent_scene(nullptr), _super_actor(nullptr), _needs_display(true)
 {}
 
 void Actor::set_rect(Rect r)
@@ -23,14 +27,36 @@ Rect Actor::get_rect() const
     return rect;
 }
 
+double Actor::get_scene_scale() const
+{
+    double scale = 1.0;
+    MainScene *scene = get_parent_scene();
+    if (scene) {
+        scale = scene->get_scale();
+    }
+
+    return scale;
+}
+
+MainScene* Actor::get_parent_scene() const
+{
+    if (_parent_scene == nullptr && _super_actor) {
+        return _super_actor->get_parent_scene();
+    }
+
+    return _parent_scene;
+}
+
 void Actor::add_subactor(ActorPtr actor)
 {
     _subactors.push_back(actor);
+    actor->_super_actor = this;
 }
 
 void Actor::remove_subactor(ActorPtr actor)
 {
-    // todo
+    actor->_super_actor = nullptr;
+    _subactors.erase(std::remove(_subactors.begin(), _subactors.end(), actor), _subactors.end());
 }
 
 void Actor::update()

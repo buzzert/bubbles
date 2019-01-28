@@ -23,10 +23,9 @@ public:
     ActorGrid(Rect r, unsigned cols);
     ~ActorGrid() override;
 
-    void update() override;
-    void render(cairo_t *cr, Rect at_rect) override;
+    void layout_actors() override;
 
-    /// Use size = -1 for "automatic" 
+    /// Use size = -1 for "automatic"
     void stack_actor(ActorPtr actor, unsigned atColumn, float size = -1);
 
     void set_orientation(ActorGrid::Orientation orientation);
@@ -38,7 +37,6 @@ private:
             // that is, requested_size in the variable dimension
     };
 
-    bool     _needs_layout = true;
     unsigned _cols;
 
     ActorGrid::Orientation _orientation = ActorGrid::Orientation::VERTICAL;
@@ -55,8 +53,6 @@ private:
 
     float fixed_dimension(Rect &r) const;
     void assign_fixed_dimension(Rect &r, float value);
-
-    void layout_if_needed();
 };
 
 BUBBLES_NAMESPACE_END

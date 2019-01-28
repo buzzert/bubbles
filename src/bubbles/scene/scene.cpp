@@ -70,12 +70,12 @@ void MainScene::update()
 void MainScene::add_actor(ActorPtr a)
 {
     _actors.push_back(a);
+    a->_parent_scene = this;
 }
 
 void MainScene::set_scale(float scale)
 {
     _scale = scale;
-    // TODO: actually use this (cairo_scale before scene render call?)
 }
 
 void MainScene::set_framerate(unsigned int fps)

@@ -17,6 +17,7 @@ BUBBLES_NAMESPACE_BEGIN
 class Actor;
 using ActorPtr = std::shared_ptr<Actor>;
 
+class MainScene;
 class Actor
 {
 public:
@@ -35,9 +36,17 @@ public:
     Color get_background_color() const { return _background_color; }
     void  set_background_color(Color c) { _background_color = c; }
 
+    double get_scene_scale() const;
+
     void set_needs_display() { _needs_display = true; };
 
     virtual void layout_actors() {};
+
+private:
+    friend class MainScene;
+    MainScene *_parent_scene;
+    Actor     *_super_actor;
+
 protected:
     Rect  rect;
     float alpha;
@@ -48,6 +57,7 @@ protected:
     bool _needs_layout = true;
 
     std::vector<ActorPtr> _subactors;
+    MainScene* get_parent_scene() const;
 };
 
 BUBBLES_NAMESPACE_END

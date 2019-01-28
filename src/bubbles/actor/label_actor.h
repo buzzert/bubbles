@@ -4,7 +4,7 @@
  * Copyright (c) 2018 James Magahern <james@magahern.com>
  */
 
-#pragma once 
+#pragma once
 
 #include <bubbles/actor/actor.h>
 #include <bubbles/core/color.h>
@@ -32,12 +32,19 @@ public:
     void set_alignment(PangoAlignment alignment);
     const PangoAlignment& get_alignment() const;
 
+    Size get_intrinsic_size() const;
+
     void render(cairo_t *cr, Rect at_rect);
 private:
     std::string    _font_prop;
     std::string    _contents;
     Color          _foreground_color;
     PangoAlignment _alignment;
+
+    bool           _pango_layout_valid = false;
+    PangoLayout   *_pango_layout;
+
+    PangoLayout* get_pango_layout(cairo_t *cr);
 };
 
 BUBBLES_NAMESPACE_END

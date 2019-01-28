@@ -42,30 +42,6 @@ void ActorGrid::each_actor(const ActorIter &iter)
     });
 }
 
-void ActorGrid::update()
-{
-    layout_if_needed();
-    each_actor([&] (ActorPtr actor) {
-        actor->update();
-    });
-}
-
-void ActorGrid::render(cairo_t *cr, Rect at_rect)
-{
-    Actor::render(cr, at_rect);
-
-    each_actor([&] (ActorPtr actor) {
-        cairo_save(cr);
-
-        Rect rect = actor->get_rect();
-        cairo_translate(cr, rect.x, rect.y);
-
-        actor->render(cr, rect);
-
-        cairo_restore(cr);
-    });
-}
-
 void ActorGrid::stack_actor(ActorPtr actor, unsigned atColumn, float size)
 {
     GridItem item {
@@ -74,6 +50,7 @@ void ActorGrid::stack_actor(ActorPtr actor, unsigned atColumn, float size)
     };
 
     _grid[atColumn].push_back(item);
+    add_subactor(actor);
     _needs_layout = true;
 }
 
@@ -113,10 +90,8 @@ void ActorGrid::assign_fixed_dimension(Rect &r, float value)
     }
 }
 
-void ActorGrid::layout_if_needed()
+void ActorGrid::layout_actors()
 {
-    if (!_needs_layout) return;
-
     // Currently columns are evenly spaced
     float fixed_item_size = fixed_dimension(rect) / _cols;
 

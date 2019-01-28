@@ -43,6 +43,14 @@ struct Rect
     };
 };
 
+struct Size
+{
+    double width;
+    double height;
+
+    Size(double w, double h) : width(w), height(h) {};
+};
+
 struct Vec2 {
     double x;
     double y;
