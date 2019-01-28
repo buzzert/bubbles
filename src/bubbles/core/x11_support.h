@@ -27,3 +27,10 @@ extern void x11_helper_destroy_surface(cairo_surface_t *surface);
 // Show/hide the mouse cursor
 extern void x11_set_cursor_visible(bool cursor_visible);
 
+// Poll for events (call from main runloop)
+extern void x11_poll_events();
+
+// Use this to register for pointer (mouse) events
+typedef void(*x11_pointer_callback_t)(void *context, int x, int y, bool pressed);
+extern void x11_register_pointer_callback(x11_pointer_callback_t callback, void *context);
+

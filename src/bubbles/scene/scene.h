@@ -30,7 +30,6 @@ public:
 
     void update();
     void render();
-    void poll_events();
 
     /// Starts main run loop
     void run();
@@ -41,10 +40,14 @@ private:
 
     double           _scale;
 
-    std::vector<ActorPtr> _actors;
+    Actor _primary_actor;
 
     Rect _canvasRect;
     unsigned int _frames_per_sec = 60;
+
+    Actor *_tracked_actor = nullptr;
+    void pointer_event(int x, int y, bool pressed);
+    static void handle_pointer_callback(void *context, int x, int y, bool pressed);
 };
 
 BUBBLES_NAMESPACE_END

@@ -41,6 +41,11 @@ struct Rect
         return "Rect(" + std::to_string(x) + ", " + std::to_string(y)
                        + ", " + std::to_string(width) + ", " + std::to_string(height) + ")";
     };
+
+    bool point_inside(float _x, float _y) const
+    {
+        return (_x > x && _x < (x + width)) && (_y > y && _y < (y + height));
+    }
 };
 
 struct Size

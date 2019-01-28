@@ -16,6 +16,9 @@
 static Window __window = { 0 };
 static Display *__display = NULL;
 
+static void *__pointer_callback_context = NULL;
+static x11_pointer_callback_t __pointer_callback = NULL;
+
 static Window get_window_from_environment_or_make_one(Display *display, int width, int height)
 {
     Window window;
@@ -99,8 +102,10 @@ cairo_surface_t* x11_helper_acquire_cairo_surface(int width, int height)
     // Set window type hint
     x11_set_window_type();
 
-    // Enable key events
-    XSelectInput(__display, __window, ButtonPressMask | KeyPressMask | StructureNotifyMask);
+    // Enable key/mouse button events
+    XSelectInput(__display, __window,
+        (ButtonPressMask | ButtonReleaseMask | KeyPressMask | StructureNotifyMask)
+    );
 
     // Map window to display
     XMapWindow(__display, __window);
@@ -131,6 +136,43 @@ void x11_set_cursor_visible(bool cursor_visible)
         XFixesShowCursor(__display, __window);
     } else {
         XFixesHideCursor(__display, __window);
+    }
+}
+
+/*
+ * Event handling
+ */
+
+static void x11_handle_button_event(XButtonEvent *event, bool pressed)
+{
+    if (__pointer_callback != NULL) {
+        __pointer_callback(__pointer_callback_context, event->x, event->y, pressed);
+    }
+}
+
+void x11_register_pointer_callback(x11_pointer_callback_t callback, void *context)
+{
+    __pointer_callback = callback;
+    __pointer_callback_context = context;
+}
+
+void x11_poll_events()
+{
+    XEvent event;
+
+    if (XPending(__display)) {
+        XNextEvent(__display, &event);
+
+        switch (event.type) {
+            case ButtonPress:
+                x11_handle_button_event(&event, true);
+                break;
+            case ButtonRelease:
+                x11_handle_button_event(&event, false);
+                break;
+            default:
+                break;
+        }
     }
 }
 

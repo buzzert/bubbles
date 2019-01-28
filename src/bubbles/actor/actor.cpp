@@ -47,6 +47,32 @@ MainScene* Actor::get_parent_scene() const
     return _parent_scene;
 }
 
+Actor* Actor::hit_test(int x, int y)
+{
+    Actor *actor = nullptr;
+    if (rect.point_inside(x, y)) {
+        actor = this;
+    }
+
+    for (const ActorPtr a : _subactors) {
+        Rect r = a->get_rect();
+        if (r.point_inside(x, y)) {
+            actor = a->hit_test(x - rect.x, y - rect.y);
+            break;
+        }
+    }
+
+    return actor;
+}
+
+void Actor::mouse_down(int x, int y)
+{
+}
+
+void Actor::mouse_up(int x, int y)
+{
+}
+
 void Actor::add_subactor(ActorPtr actor)
 {
     _subactors.push_back(actor);

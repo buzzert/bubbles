@@ -42,10 +42,16 @@ public:
 
     virtual void layout_actors() {};
 
+    // Events
+    virtual void mouse_down(int x, int y);
+    virtual void mouse_up(int x, int y);
+
 private:
     friend class MainScene;
     MainScene *_parent_scene;
     Actor     *_super_actor;
+
+    Actor* hit_test(int x, int y);
 
 protected:
     Rect  rect;
