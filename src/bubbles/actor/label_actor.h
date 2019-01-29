@@ -14,6 +14,8 @@
 
 BUBBLES_NAMESPACE_BEGIN
 
+DEF_SHARED_PTR(LabelActor)
+
 class LabelActor : public Actor
 {
 public:

@@ -12,6 +12,8 @@
 
 BUBBLES_NAMESPACE_BEGIN
 
+DEF_SHARED_PTR(ActorGrid)
+
 class ActorGrid : public Actor
 {
 public:
@@ -29,6 +31,7 @@ public:
     void stack_actor(ActorPtr actor, unsigned atColumn, float size = -1);
 
     void set_orientation(ActorGrid::Orientation orientation);
+    void set_padding(double padding) { _padding = padding; };
 
 private:
     struct GridItem {
@@ -38,6 +41,7 @@ private:
     };
 
     unsigned _cols;
+    double   _padding = 0.0;
 
     ActorGrid::Orientation _orientation = ActorGrid::Orientation::VERTICAL;
     std::vector<std::vector<GridItem>> _grid;

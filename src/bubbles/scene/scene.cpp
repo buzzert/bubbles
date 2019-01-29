@@ -18,14 +18,14 @@ void MainScene::handle_pointer_callback(void *context, int x, int y, bool presse
     scene->pointer_event(x, y, pressed);
 }
 
-MainScene::MainScene(Rect canvasRect, bool windowed)
-    : _scale(1.0), _primary_actor(canvasRect), _canvasRect(canvasRect)
+MainScene::MainScene(Rect canvasRect, bool windowed, double scale)
+    : _primary_actor(canvasRect), _canvasRect(canvasRect)
 {
-    _surface = x11_helper_acquire_cairo_surface(canvasRect.width, canvasRect.height);
+    _surface = x11_helper_acquire_cairo_surface(canvasRect.width * scale, canvasRect.height * scale);
     _cr = cairo_create(_surface);
 
     // TODO: Need to do this on window size change too
-    cairo_xlib_surface_set_size(_surface, canvasRect.width, canvasRect.height);
+    cairo_xlib_surface_set_size(_surface, canvasRect.width * scale, canvasRect.height * scale);
 
     _primary_actor._parent_scene = this;
 

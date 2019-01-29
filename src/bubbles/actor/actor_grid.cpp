@@ -98,7 +98,8 @@ void ActorGrid::layout_actors()
     // Foreach col
     Rect offset;
     for (std::vector<GridItem> col : _grid) {
-        float flexible_space_remaining = variable_dimension(rect);
+        const unsigned num_items = col.size();
+        float flexible_space_remaining = variable_dimension(rect) - (_padding * (num_items - 1));
 
         // Compute ahead of time: subtract grid items with defined height
         unsigned num_flexible_items = 0;
@@ -131,7 +132,7 @@ void ActorGrid::layout_actors()
             item.actor->set_rect(r);
 
             if (Orientation::VERTICAL == _orientation) {
-                offset.y += variable_dimension(r);
+                offset.y += variable_dimension(r) + _padding;
             } else {
                 offset.x += variable_dimension(r);
             }

@@ -17,7 +17,7 @@ typedef std::chrono::high_resolution_clock::time_point update_time;
 class MainScene
 {
 public:
-    MainScene(Rect canvasRect, bool windowed);
+    MainScene(Rect canvasRect, bool windowed, double scale = 1.0);
     ~MainScene();
 
     void add_actor(ActorPtr actor);

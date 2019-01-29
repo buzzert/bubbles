@@ -37,6 +37,11 @@ struct Rect
         return !(*this == other);
     }
 
+    Rect inset_by(double _x, double _y) const
+    {
+        return Rect(x + _x, y + _y, width - _x * 2.0, height - _y * 2.0);
+    }
+
     std::string to_string() const {
         return "Rect(" + std::to_string(x) + ", " + std::to_string(y)
                        + ", " + std::to_string(width) + ", " + std::to_string(height) + ")";
@@ -59,6 +64,8 @@ struct Size
 struct Vec2 {
     double x;
     double y;
+
+    Vec2(double x, double y) : x(x), y(y) {};
 };
 
 struct Vec3 {

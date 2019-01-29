@@ -14,8 +14,11 @@ BUBBLES_NAMESPACE_BEGIN
 
 #define DEFAULT_RGBA_MASK 0x00FF0000, 0x0000FF00, 0x000000FF, 0x00
 
-class Actor;
-using ActorPtr = std::shared_ptr<Actor>;
+#define DEF_SHARED_PTR(type) \
+    class type; \
+    using type##Ptr = std::shared_ptr<type>;
+
+DEF_SHARED_PTR(Actor)
 
 class MainScene;
 class Actor
@@ -32,6 +35,8 @@ public:
 
     Rect get_rect() const;
     void set_rect(Rect r);
+
+    Rect get_bounds() const { return Rect(0, 0, rect.width, rect.height); };
 
     Color get_background_color() const { return _background_color; }
     void  set_background_color(Color c) { _background_color = c; }
