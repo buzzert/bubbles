@@ -81,8 +81,10 @@ void MainScene::pointer_event(int x, int y, bool pressed)
         }
     } else {
         // TODO: unsafe keeping this pointer around
-        _tracked_actor->mouse_up(x, y);
-        _tracked_actor = nullptr;
+        if (_tracked_actor) {
+            _tracked_actor->mouse_up(x, y);
+            _tracked_actor = nullptr;
+        }
     }
 
 }

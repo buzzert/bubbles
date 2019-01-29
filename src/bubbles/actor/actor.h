@@ -40,6 +40,8 @@ public:
 
     void set_needs_display() { _needs_display = true; };
 
+    bool interaction_enabled = false;
+
     virtual void layout_actors() {};
 
     // Events

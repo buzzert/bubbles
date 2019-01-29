@@ -61,6 +61,7 @@ const std::string& LabelActor::get_font_prop() const
 void LabelActor::set_alignment(PangoAlignment alignment)
 {
     _alignment = alignment;
+    _pango_layout_valid = false;
     set_needs_display();
 }
 
@@ -114,6 +115,8 @@ void LabelActor::render(cairo_t *cr, Rect at_rect)
     double offset_y = 0.0;
     if (_alignment == PANGO_ALIGN_CENTER) {
         offset_x = (rect.width - intrinsic_size.width) / 2.0;
+    } else if (_alignment == PANGO_ALIGN_RIGHT) {
+        offset_x = (rect.width - intrinsic_size.width);
     }
 
     // Maybe make this an option, but for now always center vertically
