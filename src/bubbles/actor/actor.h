@@ -38,6 +38,9 @@ public:
 
     Rect get_bounds() const { return Rect(0, 0, rect.width, rect.height); };
 
+    float get_alpha() const { return _alpha; };
+    void set_alpha(float alpha) { _alpha = alpha; };
+
     Color get_background_color() const { return _background_color; }
     void  set_background_color(Color c) { _background_color = c; }
 
@@ -62,8 +65,8 @@ private:
 
 protected:
     Rect  rect;
-    float alpha;
 
+    float _alpha;
     Color _background_color;
 
     bool _needs_display = true;

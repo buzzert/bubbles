@@ -12,7 +12,7 @@
 BUBBLES_NAMESPACE_BEGIN
 
 Actor::Actor(Rect rect)
-    : rect(rect), alpha(1.0), _background_color(Color(0xFF, 0xFF, 0xFF, 0x00)),
+    : rect(rect), _alpha(1.0), _background_color(Color(0xFF, 0xFF, 0xFF, 0x00)),
       _parent_scene(nullptr), _super_actor(nullptr), _needs_display(true)
 {}
 
@@ -101,7 +101,7 @@ void Actor::update()
 
 void Actor::render(cairo_t *cr, Rect at_rect)
 {
-    // Clear with background colorz
+    // Clear with background color
     _background_color.set_source(cr);
     cairo_rectangle(cr, 0.0, 0.0, rect.width, rect.height);
     cairo_fill(cr);
