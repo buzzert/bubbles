@@ -24,9 +24,11 @@ LabelActor::~LabelActor()
 
 void LabelActor::set_contents(std::string contents)
 {
-    _contents = contents;
-    _pango_layout_valid = false;
-    set_needs_display();
+    if (_contents != contents) {
+        _contents = contents;
+        _pango_layout_valid = false;
+        set_needs_display();
+    }
 }
 
 const std::string& LabelActor::get_contents() const
@@ -47,9 +49,11 @@ const Color& LabelActor::get_foreground_color() const
 
 void LabelActor::set_font_prop(std::string font_prop)
 {
-    _font_prop = font_prop;
-    _pango_layout_valid = false;
-    set_needs_display();
+    if (_font_prop != font_prop) {
+        _font_prop = font_prop;
+        _pango_layout_valid = false;
+        set_needs_display();
+    }
 }
 
 const std::string& LabelActor::get_font_prop() const
@@ -59,9 +63,11 @@ const std::string& LabelActor::get_font_prop() const
 
 void LabelActor::set_alignment(PangoAlignment alignment)
 {
-    _alignment = alignment;
-    _pango_layout_valid = false;
-    set_needs_display();
+    if (_alignment != alignment) {
+        _alignment = alignment;
+        _pango_layout_valid = false;
+        set_needs_display();
+    }
 }
 
 const PangoAlignment& LabelActor::get_alignment() const
@@ -84,6 +90,10 @@ PangoLayout* LabelActor::get_pango_layout(cairo_t *cr)
         // If we're trying to draw text centered, we actually need to do calculation
         pango_layout_set_alignment(pango_layout, _alignment);
 
+        if (_pango_layout) {
+            g_object_unref(_pango_layout);
+        }
+        
         _pango_layout = pango_layout;
         _pango_layout_valid = true;
     }
