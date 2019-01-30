@@ -82,6 +82,15 @@ void MainScene::pointer_event(int x, int y, bool pressed)
     } else {
         // TODO: unsafe keeping this pointer around
         if (_tracked_actor) {
+            // Convert point
+            Actor *test_actor = _tracked_actor->_super_actor;
+            while (test_actor != nullptr) {
+                x -= test_actor->rect.x;
+                y -= test_actor->rect.y;
+
+                test_actor = test_actor->_super_actor;
+            }
+
             _tracked_actor->mouse_up(x, y);
             _tracked_actor = nullptr;
         }
