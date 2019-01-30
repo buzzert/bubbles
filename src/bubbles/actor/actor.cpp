@@ -12,8 +12,7 @@
 BUBBLES_NAMESPACE_BEGIN
 
 Actor::Actor(Rect rect)
-    : rect(rect), _alpha(1.0), _background_color(Color(0xFF, 0xFF, 0xFF, 0x00)),
-      _parent_scene(nullptr), _super_actor(nullptr), _needs_display(true)
+    : rect(rect)
 {}
 
 void Actor::set_rect(Rect r)

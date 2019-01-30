@@ -17,7 +17,6 @@ Vec3 matrix_vector_product(matrix_t matrix, Vec3 p)
         result[i] = 0.0;
 
         for (unsigned int j = 0; j < 3; j++) {
-            double col = row[j];
             result[i] = result[i] + row[j] * p[j];
         }
     }

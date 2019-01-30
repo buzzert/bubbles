@@ -18,7 +18,7 @@ class MainScene
 {
 public:
     MainScene(Rect canvasRect, bool windowed, double scale = 1.0);
-    ~MainScene();
+    virtual ~MainScene();
 
     void add_actor(ActorPtr actor);
 
@@ -28,8 +28,8 @@ public:
     void set_framerate(unsigned int frames_per_sec);
     void set_hides_cursor(bool hides_cursor);
 
-    void update();
-    void render();
+    virtual void update();
+    virtual void render();
 
     /// Starts main run loop
     void run();

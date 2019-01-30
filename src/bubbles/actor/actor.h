@@ -58,16 +58,16 @@ public:
 
 private:
     friend class MainScene;
-    MainScene *_parent_scene;
-    Actor     *_super_actor;
+    MainScene *_parent_scene = nullptr;
+    Actor     *_super_actor = nullptr;
 
     Actor* hit_test(int x, int y);
 
 protected:
     Rect  rect;
 
-    float _alpha;
-    Color _background_color;
+    float _alpha = 1.0;
+    Color _background_color = Color(0xFF, 0xFF, 0xFF, 0x00);
 
     bool _needs_display = true;
     bool _needs_layout = true;

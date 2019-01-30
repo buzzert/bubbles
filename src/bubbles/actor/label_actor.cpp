@@ -12,7 +12,6 @@ BUBBLES_NAMESPACE_BEGIN
 
 LabelActor::LabelActor(Rect rect, std::string contents)
     : Actor(rect), _contents(contents),
-      _foreground_color(0xFF, 0xFF, 0xFF, 0xFF),
       _font_prop(DEFAULT_FONT_PROP),
       _alignment(PANGO_ALIGN_LEFT)
 {

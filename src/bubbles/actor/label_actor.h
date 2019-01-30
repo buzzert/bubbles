@@ -38,9 +38,9 @@ public:
 
     void render(cairo_t *cr, Rect at_rect);
 private:
-    std::string    _font_prop;
     std::string    _contents;
-    Color          _foreground_color;
+    std::string    _font_prop;
+    Color          _foreground_color = Color(0xFF, 0xFF, 0xFF, 0xFF);
     PangoAlignment _alignment;
 
     bool           _pango_layout_valid = false;

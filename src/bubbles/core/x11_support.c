@@ -165,10 +165,10 @@ void x11_poll_events()
 
         switch (event.type) {
             case ButtonPress:
-                x11_handle_button_event(&event, true);
+                x11_handle_button_event(&event.xbutton, true);
                 break;
             case ButtonRelease:
-                x11_handle_button_event(&event, false);
+                x11_handle_button_event(&event.xbutton, false);
                 break;
             default:
                 break;
