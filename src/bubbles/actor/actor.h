@@ -29,6 +29,7 @@ public:
 
     virtual void update();
     virtual void render(cairo_t *cr, Rect at_rect);
+    virtual void clear(cairo_t *cr, Color color);
 
     void add_subactor(ActorPtr actor);
     void remove_subactor(ActorPtr actor);
@@ -46,7 +47,7 @@ public:
 
     double get_scene_scale() const;
 
-    void set_needs_display() { _needs_display = true; };
+    void set_needs_display();
 
     bool interaction_enabled = false;
 
@@ -67,7 +68,7 @@ protected:
     Rect  rect;
 
     float _alpha = 1.0;
-    Color _background_color = Color(0xFF, 0xFF, 0xFF, 0x00);
+    Color _background_color = Colors::black;
 
     bool _needs_display = true;
     bool _needs_layout = true;

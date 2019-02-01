@@ -46,6 +46,23 @@ MainScene* Actor::get_parent_scene() const
     return _parent_scene;
 }
 
+void Actor::set_needs_display()
+{
+    _needs_display = true;
+    
+    // Go up the hierarchy to ensure all super actors also get needs_display
+    Actor *super = _super_actor;
+    while (super) {
+        super->_needs_display = true;
+        super = super->_super_actor;
+    }
+
+    // Also go down, since we need to redraw from here down
+    for (ActorPtr a : _subactors) {
+        a->set_needs_display();
+    }
+}
+
 Actor* Actor::hit_test(int x, int y)
 {
     Actor *actor = this;
@@ -86,6 +103,18 @@ void Actor::remove_subactor(ActorPtr actor)
     _subactors.erase(std::remove(_subactors.begin(), _subactors.end(), actor), _subactors.end());
 }
 
+void Actor::clear(cairo_t *cr, Color color)
+{
+    if (color.alpha == 0) return;
+
+    cairo_save(cr);
+        cairo_set_operator(cr, CAIRO_OPERATOR_SOURCE);
+        color.set_source(cr);
+        cairo_rectangle(cr, 0.0, 0.0, rect.width, rect.height);
+        cairo_fill(cr);
+    cairo_restore(cr);
+}
+
 void Actor::update()
 {
     if (_needs_layout) {
@@ -101,12 +130,14 @@ void Actor::update()
 void Actor::render(cairo_t *cr, Rect at_rect)
 {
     // Clear with background color
-    _background_color.set_source(cr);
-    cairo_rectangle(cr, 0.0, 0.0, rect.width, rect.height);
-    cairo_fill(cr);
+    if (_needs_display && _super_actor != nullptr) {
+        clear(cr, _background_color);
+    }
 
     // TODO: untested
     for (ActorPtr a : _subactors) {
+        if (!a->_needs_display) continue;
+
         cairo_save(cr);
 
         Rect a_rect = a->get_rect();
@@ -116,6 +147,8 @@ void Actor::render(cairo_t *cr, Rect at_rect)
 
         cairo_restore(cr);
     }
+
+    _needs_display = false;
 }
 
 BUBBLES_NAMESPACE_END

@@ -27,6 +27,9 @@ MainScene::MainScene(Rect canvasRect, bool windowed, double scale)
     // TODO: Need to do this on window size change too
     cairo_xlib_surface_set_size(_surface, canvasRect.width * scale, canvasRect.height * scale);
 
+    // Typically the rule is container actors have transparent backgrounds, while actual actors
+    // have opaque backgrounds
+    _primary_actor.set_background_color(Colors::transparent);
     _primary_actor._parent_scene = this;
 
     if (!windowed) {
@@ -104,9 +107,6 @@ void MainScene::render()
     if (_scale > 1.0) {
         cairo_scale(_cr, _scale, _scale);
     }
-
-    cairo_set_source_rgba(_cr, 0.0, 0.0, 0.0, 1.0);
-    cairo_paint(_cr);
 
     _primary_actor.render(_cr, _canvasRect);
 

@@ -11,7 +11,8 @@ BUBBLES_NAMESPACE_BEGIN
 ActorGrid::ActorGrid(Rect r, unsigned cols)
     : Actor(r), _cols(cols), _grid(cols)
 {
-
+    // Actor containers should have transparent background
+    set_background_color(Colors::transparent);
 }
 
 ActorGrid::~ActorGrid()

@@ -28,6 +28,16 @@ struct Color
     void set_source(cairo_t *cr) {
         cairo_set_source_rgba(cr, CAIRO_COLOR((*this)));
     }
+
 };
+
+namespace Colors {
+    static Color black(0x00, 0x00, 0x00, 0xFF);
+    static Color white(0xFF, 0xFF, 0xFF, 0xFF);
+    static Color transparent(0x00, 0x00, 0x00, 0x00);
+    static Color red(0xFF, 0x00, 0x00, 0xFF);
+    static Color green(0x00, 0xFF, 0x00, 0xFF);
+    static Color blue(0x00, 0x00, 0xFF, 0xFF);
+}
 
 BUBBLES_NAMESPACE_END
