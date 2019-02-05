@@ -134,7 +134,7 @@ void Actor::render(cairo_t *cr, Rect at_rect)
         clear(cr, _background_color);
     }
 
-    // TODO: untested
+    // Recursively render all subactors
     for (ActorPtr a : _subactors) {
         if (!a->_needs_display) continue;
 
