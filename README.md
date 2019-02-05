@@ -1,6 +1,6 @@
 # ⓑⓤⓑⓑⓛⓔⓢ
 
-Bubbles is a very basic actor model layer hierarchy for drawable nodes. It allows you to organize a hierarchy of drawable "actors" (the nodes) into a "scene". The scene then acts as a sort of runloop, responsible for rendering actors in their respective positions. 
+Bubbles is a very basic actor-based layer hierarchy for drawable nodes. It allows you to organize a hierarchy of drawable "actors" (the nodes) into a "scene". The scene then acts as a sort of runloop, responsible for rendering actors in their respective positions. 
 
 ## Building
 ### Dependencies
