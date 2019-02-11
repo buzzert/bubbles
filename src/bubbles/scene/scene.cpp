@@ -21,6 +21,7 @@ void MainScene::handle_pointer_callback(void *context, int x, int y, bool presse
 MainScene::MainScene(Rect canvasRect, bool windowed, double scale)
     : _primary_actor(canvasRect), _canvasRect(canvasRect)
 {
+    _scale = scale;
     _surface = x11_helper_acquire_cairo_surface(canvasRect.width * scale, canvasRect.height * scale);
     _cr = cairo_create(_surface);
 
