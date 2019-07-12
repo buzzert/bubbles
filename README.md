@@ -13,10 +13,8 @@ x11
 xfixes
 
 ### Compiling 
-This project uses the Meson build system.
 ```
-meson build
-ninja -C build
+mkdir build && cmake .. && make
 ```
 
 ## Actors
