@@ -16,8 +16,7 @@
 static Window __window = { 0 };
 static Display *__display = NULL;
 
-static void *__pointer_callback_context = NULL;
-static x11_pointer_callback_t __pointer_callback = NULL;
+static x11_callbacks_t __callbacks = { 0 };
 
 static Window get_window_from_environment_or_make_one(Display *display, int width, int height)
 {
@@ -145,20 +144,21 @@ void x11_set_cursor_visible(bool cursor_visible)
 
 static void x11_handle_button_event(XButtonEvent *event, bool pressed)
 {
-    if (__pointer_callback != NULL) {
-        __pointer_callback(__pointer_callback_context, event->x, event->y, pressed);
+    if (__callbacks.pointer_callback != NULL) {
+        __callbacks.pointer_callback(__callbacks.context, event->x, event->y, pressed);
     }
 }
 
-void x11_register_pointer_callback(x11_pointer_callback_t callback, void *context)
+void x11_register_callbacks(x11_callbacks_t callbacks)
 {
-    __pointer_callback = callback;
-    __pointer_callback_context = context;
+    __callbacks = callbacks;
 }
 
 void x11_poll_events()
 {
     XEvent event;
+    Atom wmDeleteMessage = XInternAtom(__display, "WM_DELETE_WINDOW", False);
+    XSetWMProtocols(__display, __window, &wmDeleteMessage, 1);
 
     if (XPending(__display)) {
         XNextEvent(__display, &event);
@@ -169,6 +169,13 @@ void x11_poll_events()
                 break;
             case ButtonRelease:
                 x11_handle_button_event(&event.xbutton, false);
+                break;
+            case ClientMessage:
+                if (event.xclient.data.l[0] == (long)wmDeleteMessage) {
+                    if (__callbacks.window_delete_callback != NULL) {
+                        __callbacks.window_delete_callback(__callbacks.context);
+                    }
+                }
                 break;
             default:
                 break;

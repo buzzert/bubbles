@@ -14,8 +14,12 @@ BUBBLES_NAMESPACE_BEGIN
 
 void MainScene::handle_pointer_callback(void *context, int x, int y, bool pressed)
 {
-    MainScene *scene = (MainScene *)context;
-    scene->pointer_event(x, y, pressed);
+    static_cast<MainScene *>(context)->pointer_event(x, y, pressed);
+}
+
+void MainScene::handle_window_delete_callback(void *context)
+{
+    static_cast<MainScene *>(context)->_running = false;
 }
 
 MainScene::MainScene(Rect canvasRect, bool windowed, double scale)
@@ -37,7 +41,14 @@ MainScene::MainScene(Rect canvasRect, bool windowed, double scale)
         x11_helper_set_fullscreen(true);
     }
 
-    x11_register_pointer_callback(&MainScene::handle_pointer_callback, this);
+    x11_callbacks_t callbacks = {
+        .context = this,
+
+        .pointer_callback = &MainScene::handle_pointer_callback,
+        .window_delete_callback = &MainScene::handle_window_delete_callback
+    };
+
+    x11_register_callbacks(callbacks);
 }
 
 MainScene::~MainScene()
@@ -119,11 +130,11 @@ void MainScene::render()
 
 void MainScene::run()
 {
-    bool running = true;
+    _running = true;
 
     const int frames_per_sec = 60;
     const long sleep_nsec = (1.0 / frames_per_sec) * 1000000000;
-    while (running) {
+    while (_running) {
         update();
         render();
 

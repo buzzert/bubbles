@@ -38,6 +38,7 @@ private:
     cairo_t         *_cr;
     cairo_surface_t *_surface;
 
+    bool             _running;
     double           _scale;
 
     Actor _primary_actor;
@@ -48,6 +49,8 @@ private:
     Actor *_tracked_actor = nullptr;
     void pointer_event(int x, int y, bool pressed);
     static void handle_pointer_callback(void *context, int x, int y, bool pressed);
+
+    static void handle_window_delete_callback(void *context);
 };
 
 BUBBLES_NAMESPACE_END

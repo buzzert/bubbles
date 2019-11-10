@@ -30,7 +30,16 @@ extern void x11_set_cursor_visible(bool cursor_visible);
 // Poll for events (call from main runloop)
 extern void x11_poll_events();
 
-// Use this to register for pointer (mouse) events
+// Callback function types for events
+typedef void(*x11_window_delete_callback_t)(void *context);
 typedef void(*x11_pointer_callback_t)(void *context, int x, int y, bool pressed);
-extern void x11_register_pointer_callback(x11_pointer_callback_t callback, void *context);
+
+typedef struct {
+    void *context;
+
+    x11_pointer_callback_t pointer_callback;
+    x11_window_delete_callback_t window_delete_callback;
+} x11_callbacks_t;
+
+extern void x11_register_callbacks(x11_callbacks_t callbacks);
 
