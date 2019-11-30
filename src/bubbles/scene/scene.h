@@ -23,7 +23,7 @@ public:
     void add_actor(ActorPtr actor);
 
     void set_scale(float scale);
-    double get_scale() const { return _scale; };
+    double get_scale() const { return _scale; }
 
     void set_framerate(unsigned int frames_per_sec);
     void set_hides_cursor(bool hides_cursor);
@@ -34,7 +34,7 @@ public:
     /// Starts main run loop
     void run();
 
-private:
+protected:
     cairo_t         *_cr;
     cairo_surface_t *_surface;
 
@@ -47,9 +47,10 @@ private:
     unsigned int _frames_per_sec = 60;
 
     Actor *_tracked_actor = nullptr;
-    void pointer_event(int x, int y, bool pressed);
-    static void handle_pointer_callback(void *context, int x, int y, bool pressed);
 
+    virtual void pointer_event(int x, int y, bool pressed);
+
+    static void handle_pointer_callback(void *context, int x, int y, bool pressed);
     static void handle_window_delete_callback(void *context);
 };
 

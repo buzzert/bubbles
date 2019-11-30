@@ -44,7 +44,7 @@ private:
     PangoAlignment _alignment;
 
     bool           _pango_layout_valid = false;
-    PangoLayout   *_pango_layout;
+    PangoLayout   *_pango_layout = nullptr;
 
     PangoLayout* get_pango_layout(cairo_t *cr);
 };

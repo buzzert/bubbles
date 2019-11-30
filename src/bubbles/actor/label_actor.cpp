@@ -90,7 +90,7 @@ PangoLayout* LabelActor::get_pango_layout(cairo_t *cr)
         // If we're trying to draw text centered, we actually need to do calculation
         pango_layout_set_alignment(pango_layout, _alignment);
 
-        if (_pango_layout) {
+        if (_pango_layout != nullptr) {
             g_object_unref(_pango_layout);
         }
         
