@@ -132,6 +132,7 @@ void LabelActor::render(cairo_t *cr, Rect at_rect)
     offset_y = (rect.height - intrinsic_size.height) / 2.0;
 
     Color &color = _foreground_color;
+    color.alpha = static_cast<uint8_t>(_alpha * 0xFF);
     cairo_set_source_rgba(cr, CAIRO_COLOR(color));
 
     cairo_move_to(cr, offset_x, offset_y);
