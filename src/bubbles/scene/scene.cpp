@@ -22,6 +22,11 @@ void MainScene::handle_window_delete_callback(void *context)
     static_cast<MainScene *>(context)->_running = false;
 }
 
+void MainScene::handle_window_expose_callback(void *context)
+{
+    static_cast<MainScene *>(context)->_primary_actor.set_needs_display();
+}
+
 MainScene::MainScene(Rect canvasRect, bool windowed, double scale)
     : _primary_actor(canvasRect), _canvasRect(canvasRect)
 {
@@ -45,7 +50,8 @@ MainScene::MainScene(Rect canvasRect, bool windowed, double scale)
         .context = this,
 
         .pointer_callback = &MainScene::handle_pointer_callback,
-        .window_delete_callback = &MainScene::handle_window_delete_callback
+        .window_delete_callback = &MainScene::handle_window_delete_callback,
+        .window_expose_callback = &MainScene::handle_window_expose_callback,
     };
 
     x11_register_callbacks(callbacks);

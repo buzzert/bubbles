@@ -32,6 +32,7 @@ extern void x11_poll_events();
 
 // Callback function types for events
 typedef void(*x11_window_delete_callback_t)(void *context);
+typedef void(*x11_window_expose_callback_t)(void *context);
 typedef void(*x11_pointer_callback_t)(void *context, int x, int y, bool pressed);
 
 typedef struct {
@@ -39,6 +40,7 @@ typedef struct {
 
     x11_pointer_callback_t pointer_callback;
     x11_window_delete_callback_t window_delete_callback;
+    x11_window_expose_callback_t window_expose_callback;
 } x11_callbacks_t;
 
 extern void x11_register_callbacks(x11_callbacks_t callbacks);

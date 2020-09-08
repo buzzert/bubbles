@@ -103,7 +103,8 @@ cairo_surface_t* x11_helper_acquire_cairo_surface(int width, int height)
 
     // Enable key/mouse button events
     XSelectInput(__display, __window,
-        (ButtonPressMask | ButtonReleaseMask | KeyPressMask | StructureNotifyMask)
+        (ButtonPressMask | ButtonReleaseMask | KeyPressMask | 
+         StructureNotifyMask | ExposureMask)
     );
 
     // Map window to display
@@ -149,6 +150,13 @@ static void x11_handle_button_event(XButtonEvent *event, bool pressed)
     }
 }
 
+static void x11_handle_expose_event(XExposeEvent *event)
+{
+    if (__callbacks.window_expose_callback != NULL) {
+        __callbacks.window_expose_callback(__callbacks.context);
+    }
+}
+
 void x11_register_callbacks(x11_callbacks_t callbacks)
 {
     __callbacks = callbacks;
@@ -176,6 +184,9 @@ void x11_poll_events()
                         __callbacks.window_delete_callback(__callbacks.context);
                     }
                 }
+                break;
+            case Expose:
+                x11_handle_expose_event(&event);
                 break;
             default:
                 break;

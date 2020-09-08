@@ -52,6 +52,7 @@ protected:
 
     static void handle_pointer_callback(void *context, int x, int y, bool pressed);
     static void handle_window_delete_callback(void *context);
+    static void handle_window_expose_callback(void *context);
 };
 
 BUBBLES_NAMESPACE_END
