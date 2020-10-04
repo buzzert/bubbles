@@ -18,7 +18,7 @@ Actor::Actor(Rect rect)
 void Actor::set_rect(Rect r)
 {
     rect = r;
-    _needs_display = true;
+    set_needs_display();
 }
 
 Rect Actor::get_rect() const
@@ -44,6 +44,16 @@ MainScene* Actor::get_parent_scene() const
     }
 
     return _parent_scene;
+}
+
+cairo_t* Actor::get_inherited_cairo_context() const
+{
+    MainScene *parent_scene = get_parent_scene();
+    if (!parent_scene) {
+        return nullptr;
+    }
+
+    return parent_scene->get_cairo_context();
 }
 
 void Actor::set_needs_display()

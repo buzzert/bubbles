@@ -16,6 +16,8 @@ typedef std::chrono::high_resolution_clock::time_point update_time;
 
 class MainScene
 {
+    friend Actor;
+
 public:
     MainScene(Rect canvasRect, bool windowed, double scale = 1.0);
     virtual ~MainScene();
@@ -25,6 +27,8 @@ public:
     void set_scale(float scale);
     double get_scale() const { return _scale; }
 
+    Rect get_canvas_rect() const { return _canvasRect; }
+
     void set_framerate(unsigned int frames_per_sec);
     void set_hides_cursor(bool hides_cursor);
 
@@ -33,6 +37,9 @@ public:
 
     /// Starts main run loop
     void run();
+
+private:
+    cairo_t* get_cairo_context() const;
 
 protected:
     cairo_t         *_cr;
@@ -53,6 +60,8 @@ protected:
     static void handle_pointer_callback(void *context, int x, int y, bool pressed);
     static void handle_window_delete_callback(void *context);
     static void handle_window_expose_callback(void *context);
+
+
 };
 
 BUBBLES_NAMESPACE_END

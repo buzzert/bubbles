@@ -75,6 +75,7 @@ protected:
 
     std::vector<ActorPtr> _subactors;
     MainScene* get_parent_scene() const;
+    cairo_t* get_inherited_cairo_context() const;
 };
 
 BUBBLES_NAMESPACE_END

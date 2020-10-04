@@ -89,6 +89,11 @@ void MainScene::set_hides_cursor(bool hides_cursor)
     x11_set_cursor_visible(!hides_cursor);
 }
 
+cairo_t* MainScene::get_cairo_context() const
+{
+    return _cr;
+}
+
 void MainScene::pointer_event(int x, int y, bool pressed)
 {
     x /= _scale;
