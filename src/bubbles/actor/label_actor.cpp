@@ -5,6 +5,7 @@
  */
 
 #include "label_actor.h"
+#include <bubbles/scene/scene.h>
 
 BUBBLES_NAMESPACE_BEGIN
 
@@ -13,7 +14,8 @@ BUBBLES_NAMESPACE_BEGIN
 LabelActor::LabelActor(Rect rect, std::string contents)
     : Actor(rect), _contents(contents),
       _font_prop(DEFAULT_FONT_PROP),
-      _alignment(PANGO_ALIGN_LEFT)
+      _alignment(PANGO_ALIGN_LEFT),
+      _padding(0, 0)
 {
 }
 
@@ -75,6 +77,16 @@ const PangoAlignment& LabelActor::get_alignment() const
     return _alignment;
 }
 
+const Size& LabelActor::get_padding() const
+{
+    return _padding;
+}
+
+void LabelActor::set_padding(const Size padding)
+{
+    _padding = padding;
+}
+
 PangoLayout* LabelActor::get_pango_layout(cairo_t *cr)
 {
     if (_pango_layout == nullptr || !_pango_layout_valid) {
@@ -101,16 +113,21 @@ PangoLayout* LabelActor::get_pango_layout(cairo_t *cr)
     return _pango_layout;
 }
 
-Size LabelActor::get_intrinsic_size() const
+Size LabelActor::get_intrinsic_size()
 {
     int layout_width = 0;
     int layout_height = 0;
+
+    if (_pango_layout == nullptr) {
+        cairo_t *cr = get_inherited_cairo_context();
+        get_pango_layout(cr);
+    }
 
     if (_pango_layout != nullptr) {
         pango_layout_get_pixel_size(_pango_layout, &layout_width, &layout_height);
     }
 
-    return Size(layout_width, layout_height);
+    return Size(layout_width + (_padding.width * 2), layout_height + (_padding.height * 2));
 }
 
 void LabelActor::render(cairo_t *cr, Rect at_rect)
@@ -120,12 +137,13 @@ void LabelActor::render(cairo_t *cr, Rect at_rect)
     PangoLayout *pango_layout = get_pango_layout(cr);
     Size intrinsic_size = get_intrinsic_size();
 
-    double offset_x = 0.0;
-    double offset_y = 0.0;
+    double offset_x = _padding.width;
+    double offset_y = _padding.height;
+    const double padding_adjust = _padding.width / 2.0;
     if (_alignment == PANGO_ALIGN_CENTER) {
-        offset_x = (rect.width - intrinsic_size.width) / 2.0;
+        offset_x = (rect.width - (intrinsic_size.width - _padding.width * 2)) / 2.0;
     } else if (_alignment == PANGO_ALIGN_RIGHT) {
-        offset_x = (rect.width - intrinsic_size.width);
+        offset_x = (rect.width - intrinsic_size.width) + padding_adjust;
     }
 
     // Maybe make this an option, but for now always center vertically

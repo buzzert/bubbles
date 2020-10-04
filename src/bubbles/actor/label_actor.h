@@ -34,7 +34,10 @@ public:
     void set_alignment(PangoAlignment alignment);
     const PangoAlignment& get_alignment() const;
 
-    Size get_intrinsic_size() const;
+    void set_padding(const Size padding);
+    const Size& get_padding() const;
+
+    Size get_intrinsic_size();
 
     void render(cairo_t *cr, Rect at_rect);
 private:
@@ -42,6 +45,7 @@ private:
     std::string    _font_prop;
     Color          _foreground_color = Color(0xFF, 0xFF, 0xFF, 0xFF);
     PangoAlignment _alignment;
+    Size           _padding;
 
     bool           _pango_layout_valid = false;
     PangoLayout   *_pango_layout = nullptr;
