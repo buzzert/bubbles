@@ -15,14 +15,11 @@
 BUBBLES_NAMESPACE_BEGIN
 
 Actor::Actor(Rect rect)
-    : rect(rect),
-      _damage_rect(rect)
+    : rect(rect)
 {}
 
 void Actor::set_rect(Rect r)
 {
-    _damage_rect = rect;
-
     rect = r;
     set_needs_layout();
     set_needs_display();
@@ -65,26 +62,33 @@ cairo_t* Actor::get_inherited_cairo_context() const
 
 void Actor::set_needs_display()
 {
+    set_needs_display(true);
+}
+
+void Actor::set_needs_display(bool notify_super)
+{
     _needs_display = true;
     
     // Go up the hierarchy to ensure all super actors also get needs_display
-    Rect damage_rect = rect;
-    Actor *super = _super_actor;
-    while (super) {
-        super->_damage_rect = damage_rect;
-        super->_needs_display = true;
-        super = super->_super_actor;
+    if (notify_super) {
+        Rect damage_rect = rect;
+        Actor *super = _super_actor;
+        while (super) {
+            super->_damage_rect = damage_rect;
+            super->_needs_display = true;
+            super = super->_super_actor;
 
-        damage_rect = Rect(
-            rect.x + _damage_rect.x,
-            rect.y + _damage_rect.y,
-            _damage_rect.width, _damage_rect.height
-        );
+            damage_rect = Rect(
+                rect.x + _damage_rect.x,
+                rect.y + _damage_rect.y,
+                _damage_rect.width, _damage_rect.height
+            );
+        }
     }
 
     // Also go down, since we need to redraw from here down
     for (ActorPtr a : _subactors) {
-        a->set_needs_display();
+        a->set_needs_display(false);
     }
 }
 
@@ -136,15 +140,20 @@ void Actor::remove_subactor(ActorPtr actor)
 void Actor::clear(cairo_t *cr, Color color)
 {
     if (color.alpha == 0) return;
+    
+    Rect clear_rect = get_bounds();
+    if (_damage_rect != RECT_ZERO) {
+        clear_rect = _damage_rect;
+    }
 
     cairo_save(cr);
         cairo_set_operator(cr, CAIRO_OPERATOR_SOURCE);
         color.set_source(cr);
-        cairo_rectangle(cr, _damage_rect.x, _damage_rect.y, _damage_rect.width, _damage_rect.height);
+        cairo_rectangle(cr, clear_rect.x, clear_rect.y, clear_rect.width, clear_rect.height);
         cairo_fill(cr);
     cairo_restore(cr);
 
-    _damage_rect = get_bounds();
+    _damage_rect = RECT_ZERO;
 }
 
 void Actor::update()

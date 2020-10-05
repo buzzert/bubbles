@@ -74,11 +74,13 @@ protected:
     bool _needs_display = true;
     bool _needs_layout = true;
 
-    Rect _damage_rect;
+    Rect _damage_rect = RECT_ZERO;
 
     std::vector<ActorPtr> _subactors;
     MainScene* get_parent_scene() const;
     cairo_t* get_inherited_cairo_context() const;
+
+    void set_needs_display(bool notify_super); 
 };
 
 BUBBLES_NAMESPACE_END

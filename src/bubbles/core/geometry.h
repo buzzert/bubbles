@@ -9,8 +9,6 @@
 #include <math.h>
 #include <bubbles/core/foundation.h>
 
-#define RECT_ZERO Rect()
-
 BUBBLES_NAMESPACE_BEGIN
 
 struct Rect
@@ -24,7 +22,7 @@ struct Rect
     Rect() : x(0), y(0), width(0), height(0) {};
     Rect(int x, int y, int width, int height) : x(x), y(y), width(width), height(height) {};
 
-    bool operator==(Rect &other) {
+    bool operator==(const Rect &other) const {
         return (
             x == other.x &&
             y == other.y &&
@@ -33,7 +31,7 @@ struct Rect
         );
     }
 
-    bool operator!=(Rect &other) {
+    bool operator!=(const Rect &other) const {
         return !(*this == other);
     }
 
@@ -52,6 +50,8 @@ struct Rect
         return (_x > x && _x < (x + width)) && (_y > y && _y < (y + height));
     }
 };
+
+static const Rect RECT_ZERO = Rect(0, 0, 0, 0);
 
 struct Size
 {
