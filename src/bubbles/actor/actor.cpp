@@ -9,15 +9,22 @@
 #include <algorithm>
 #include <bubbles/scene/scene.h>
 
+#include <cstdlib>
+#include <unistd.h>
+
 BUBBLES_NAMESPACE_BEGIN
 
 Actor::Actor(Rect rect)
-    : rect(rect)
+    : rect(rect),
+      _damage_rect(rect)
 {}
 
 void Actor::set_rect(Rect r)
 {
+    _damage_rect = rect;
+
     rect = r;
+    set_needs_layout();
     set_needs_display();
 }
 
@@ -61,16 +68,29 @@ void Actor::set_needs_display()
     _needs_display = true;
     
     // Go up the hierarchy to ensure all super actors also get needs_display
+    Rect damage_rect = rect;
     Actor *super = _super_actor;
     while (super) {
+        super->_damage_rect = damage_rect;
         super->_needs_display = true;
         super = super->_super_actor;
+
+        damage_rect = Rect(
+            rect.x + _damage_rect.x,
+            rect.y + _damage_rect.y,
+            _damage_rect.width, _damage_rect.height
+        );
     }
 
     // Also go down, since we need to redraw from here down
     for (ActorPtr a : _subactors) {
         a->set_needs_display();
     }
+}
+
+void Actor::set_needs_layout()
+{
+    _needs_layout = true;
 }
 
 Actor* Actor::hit_test(int x, int y)
@@ -120,9 +140,11 @@ void Actor::clear(cairo_t *cr, Color color)
     cairo_save(cr);
         cairo_set_operator(cr, CAIRO_OPERATOR_SOURCE);
         color.set_source(cr);
-        cairo_rectangle(cr, 0.0, 0.0, rect.width, rect.height);
+        cairo_rectangle(cr, _damage_rect.x, _damage_rect.y, _damage_rect.width, _damage_rect.height);
         cairo_fill(cr);
     cairo_restore(cr);
+
+    _damage_rect = get_bounds();
 }
 
 void Actor::update()

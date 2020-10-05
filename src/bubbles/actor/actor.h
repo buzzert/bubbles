@@ -51,6 +51,7 @@ public:
 
     bool interaction_enabled = false;
 
+    void set_needs_layout();
     virtual void layout_actors() {};
 
     // Events
@@ -72,6 +73,8 @@ protected:
 
     bool _needs_display = true;
     bool _needs_layout = true;
+
+    Rect _damage_rect;
 
     std::vector<ActorPtr> _subactors;
     MainScene* get_parent_scene() const;
